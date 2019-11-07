@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:http/http.dart' as http;
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
 void main() {
   runApp(new MaterialApp(
     home: new MyApp(),
@@ -18,26 +13,12 @@ class MyApp extends StatefulWidget {
 
 class _State extends State<MyApp> {
 
-  Map _countries = new Map();
+  String _value = 'Nothing Yet';
 
-  void _getData() async {
-    var url = 'http://country.io/names.json';
-    var response = await http.get(url);
-
-    if(response.statusCode == 200) {
-      setState(() => _countries = json.decode(response.body));
-      print('Loaded ${_countries.length} countries');
-    } else {
-      print("Status code: ${response.statusCode}");
-    }
-  }
-
+  void _onPressed() => setState(() => _value = new DateTime.now().toString());
 
   @override
   Widget build(BuildContext context) {
-
-    //_getData();
-
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Name here'),
@@ -47,30 +28,16 @@ class _State extends State<MyApp> {
           child: new Center(
             child: new Column(
               children: <Widget>[
-                new Text('Countries', style: new TextStyle(fontWeight: FontWeight.bold),),
-                new Expanded(child: new ListView.builder(
-                  itemCount: _countries.length,
-                  itemBuilder: (BuildContext context, int index){
-                    String key = _countries.keys.elementAt(index);
-                    return new Row(
-                      children: <Widget>[
-                        new Text('${key} : '),
-                        new Text(_countries[key])
-                      ],
-                    );
-                  },
-
-                ))
-
+                new Text(_value),
+                new IconButton(
+                  icon: new Icon(Icons.timer),
+                  onPressed: _onPressed,
+                  tooltip: 'Click me',
+                )
               ],
             ),
           )
       ),
     );
-  }
-
-  @override
-  void initState() {
-    _getData();
   }
 }
