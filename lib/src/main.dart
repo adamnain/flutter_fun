@@ -11,67 +11,66 @@ class MyApp extends StatefulWidget {
   _State createState() => new _State();
 }
 
-enum Animals{Cat, Dog, Bird, Lizard, Fish}
+class Choice {
+  final String title;
+  final IconData icon;
 
-class _State extends State<MyApp> {
+  const Choice({this.title, this.icon});
+}
 
-  Animals _selected = Animals.Cat;
-  String _value = 'Make a Selection';
-  List<PopupMenuEntry<Animals>> _items = new List<PopupMenuEntry<Animals>>();
+class _State extends State<MyApp> with SingleTickerProviderStateMixin {
+
+  TabController _controller;
+  List<Choice> _items = const <Choice>[
+    const Choice(title: 'CAR', icon: Icons.directions_car),
+    const Choice(title: 'BICYCLE', icon: Icons.directions_bike),
+    const Choice(title: 'BOAT', icon: Icons.directions_boat),
+    const Choice(title: 'BUS', icon: Icons.directions_bus),
+    const Choice(title: 'TRAIN', icon: Icons.directions_railway),
+    const Choice(title: 'WALK', icon: Icons.directions_walk),
+  ];
 
 
   @override
   void initState() {
-    for(Animals animal in Animals.values) {
-      _items.add(new PopupMenuItem(
-        child: new Text(_getDisplay(animal),),
-        value: animal,
-      ));
-    }
-  }
-
-  void _onSelected(Animals animal) {
-    setState((){
-      _selected = animal;
-      _value = 'You Selected ${_getDisplay(animal)}';
-    });
-  }
-
-  String _getDisplay(Animals animal) {
-    int index = animal.toString().indexOf('.');
-    index++;
-    return animal.toString().substring(index);
+    _controller = new TabController(length: _items.length, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Name here'),
-      ),
-      body: new Container(
-          padding: new EdgeInsets.all(32.0),
-          child: new Center(
-            child: new Row(
-              children: <Widget>[
-                new Container(
-                  padding: new EdgeInsets.all(5.0),
-                  child: new Text(_value),
-                ),
-                new PopupMenuButton<Animals>(
-                    child:  new Icon(Icons.input),
-                    initialValue: Animals.Cat,
-                    onSelected: _onSelected,
-                    itemBuilder: (BuildContext context) {
-                      return _items;
-                    }
+        appBar: new AppBar(
+          title: new Text('Name here'),
+          bottom: new PreferredSize(
+            preferredSize: const Size.fromHeight(48.0),
+            child: new Theme(
+                data: Theme.of(context).copyWith(accentColor: Colors.white),
+                child: new Container(
+                  height: 48.0,
+                  alignment: Alignment.center,
+                  child: new TabPageSelector(controller: _controller,),
                 )
-              ],
             ),
-          )
-      ),
+
+          ),
+        ),
+        body: new TabBarView(
+          controller: _controller,
+          children: _items.map((Choice item){
+            return new Container(
+              padding: new EdgeInsets.all(25.0),
+              child: new Center(
+                child: new Column(
+                  children: <Widget>[
+                    new Text(item.title),
+                    new Icon(item.icon, size: 120.0,)
+                  ],
+                ),
+              ),
+
+            );
+          }).toList(),
+        )
     );
   }
-
-
 }
