@@ -11,45 +11,53 @@ class MyApp extends StatefulWidget {
   _State createState() => new _State();
 }
 
-class MyItem {
-  bool isExpanded;
-  final String header;
-  final Widget body;
-
-  MyItem(this.isExpanded, this.header, this.body);
-}
-
 class _State extends State<MyApp> {
 
-  List<MyItem> _items = new List<MyItem>();
-
+  int counter = 0;
+  List<Widget> _list = new List<Widget>();
 
   @override
   void initState() {
-    for(int i = 0 ; i< 10; i++) {
-      _items.add(new MyItem(
-          false,
-          'Item ${i}',
-          new Container(
-            padding: new EdgeInsets.all(10.0),
-            child: new Text('Hello World'),
-          )
-      ));
+    for (int i = 0; i < 5; i++) {
+      Widget child = _newItem(i);
+      _list.add(child);
     }
   }
 
-  ExpansionPanel _createitem(MyItem item) {
-    return new ExpansionPanel(
-        headerBuilder: (BuildContext context, bool isExpanded) {
-          return new Container(
-            padding: new EdgeInsets.all(5.0),
-            child: new Text('Header ${item.header}'),
-          );
-        },
-        body: item.body,
-        isExpanded: item.isExpanded
+  void _onClicked() {
+    Widget child = _newItem(counter);
+    setState(() => _list.add(child));
+  }
 
+  Widget _newItem(int i)  {
+    Key key = new Key('item_${i}');
+    Container child = new Container(
+      key: key,
+      padding: new EdgeInsets.all(10.0),
+      child: new Chip(
+        label: new Text('${i} Name here'),
+        deleteIconColor: Colors.red,
+        deleteButtonTooltipMessage: 'Delete',
+        onDeleted: () => _removeItem(key),
+        avatar: new CircleAvatar(
+          backgroundColor: Colors.grey.shade800,
+          child: new Text(i.toString()),
+        ),
+      ),
     );
+
+    counter++;
+    return child;
+  }
+
+  void _removeItem(Key key) {
+    for(int i = 0; i < _list.length; i++) {
+      Widget child = _list.elementAt(i);
+      if(child.key == key) {
+        setState(() => _list.removeAt(i));
+        print('Removing ${key.toString()}');
+      }
+    }
   }
 
   @override
@@ -58,20 +66,15 @@ class _State extends State<MyApp> {
       appBar: new AppBar(
         title: new Text('Name here'),
       ),
+      floatingActionButton: new FloatingActionButton(onPressed: _onClicked, child: new Icon(Icons.add),),
+
       body: new Container(
-        padding: new EdgeInsets.all(32.0),
-        child: new ListView(
-          children: <Widget>[
-            new ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded) {
-                setState(() {
-                  _items[index].isExpanded = !_items[index].isExpanded;
-                });
-              },
-              children: _items.map(_createitem).toList(),
-            )
-          ],
-        ),
+          padding: new EdgeInsets.all(32.0),
+          child: new Center(
+            child: new Column(
+              children: _list,
+            ),
+          )
       ),
     );
   }
