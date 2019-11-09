@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(new MaterialApp(
@@ -11,39 +12,52 @@ class MyApp extends StatefulWidget {
   _State createState() => new _State();
 }
 
+class Area {
+  int index;
+  String name;
+  Color color;
+  Area({this.index: -1, this.name: 'Area', this.color: Colors.lightBlueAccent});
+}
+
 class _State extends State<MyApp> {
 
-  List<Step> _steps;
-  int _current;
+  int _location;
+  List<Area> _areas;
 
 
   @override
   void initState() {
-    _current = 0;
-    _steps = <Step>[
-      new Step(title: new Text('Step 1'), content: new Text('Do Something'), isActive: true),
-      new Step(title: new Text('Step 2'), content: new Text('Do Something'), isActive: false),
-      new Step(title: new Text('Step 3'), content: new Text('Do Something'), isActive: false),
-    ];
+    _areas = new List<Area>();
+    for(int i = 0; i< 16; i++) {
+      _areas.add(new Area(index: i, name: 'Area ${i}'));
+    }
+
+    var rng = new Random();
+    _location = rng.nextInt(_areas.length);
   }
 
-  void _stepContinue() {
-    setState(() {
-      _current++;
-      if(_current >= _steps.length) _current = _steps.length - 1;
-    });
+  Widget _generate(int index) {
+    return new GridTile(
+        child: new Container(
+          padding: new EdgeInsets.all(5.0),
+          child: new RaisedButton(
+            onPressed: () => _onPressed(index),
+            color: _areas[index].color,
+            child: new Text(_areas[index].name, textAlign: TextAlign.center),
+
+          ),
+        )
+    );
   }
 
-  void _stepCancel() {
-    setState(() {
-      _current--;
-      if(_current < 0) _current = 0;
-    });
-  }
-
-  void _stepTap(int index) {
-    setState(() {
-      _current = index;
+  void _onPressed(int index) {
+    setState((){
+      if(index == _location) {
+        _areas[index].color = Colors.green;
+        //You won
+      } else {
+        _areas[index].color = Colors.red;
+      }
     });
   }
 
@@ -56,13 +70,9 @@ class _State extends State<MyApp> {
       body: new Container(
           padding: new EdgeInsets.all(32.0),
           child: new Center(
-              child: new Stepper(
-                steps: _steps,
-                type: StepperType.vertical,
-                currentStep: _current,
-                onStepCancel: _stepCancel,
-                onStepContinue: _stepContinue,
-                onStepTapped: _stepTap,
+              child: new GridView.count(
+                crossAxisCount: 4,
+                children: new List<Widget>.generate(16, _generate),
               )
           )
       ),
