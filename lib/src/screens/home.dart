@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../code/GlobalState.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -7,6 +7,25 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  TextEditingController _name;
+  GlobalState _store = GlobalState.instance;
+
+
+  @override
+  void initState() {
+    _name = new TextEditingController();
+    _store.set('name', '');
+    _name.text = _store.get('name');
+  }
+
+  void _onPressed() {
+    setState((){
+      _store.set('name', _name.text);
+    });
+    Navigator.of(context).pushNamed('/Second');
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -18,9 +37,11 @@ class _HomeState extends State<Home> {
           child: new Center(
             child: new Column(
               children: <Widget>[
-                new Text('Welcome Home'),
-                new RaisedButton(onPressed: (){Navigator.of(context).pushNamed('/Second');}, child: new Text('Second'),),
-                new RaisedButton(onPressed: (){Navigator.of(context).pushNamed('/Third');}, child: new Text('Third'),)
+                new TextField(
+                  controller: _name,
+                  decoration: new InputDecoration(labelText: 'Enter your name'),
+                ),
+                new RaisedButton(onPressed: _onPressed, child: new Text('Next'),)
               ],
             ),
           )

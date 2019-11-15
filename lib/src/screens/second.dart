@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../code/GlobalState.dart';
 
 class Second extends StatefulWidget {
   @override
@@ -7,6 +7,9 @@ class Second extends StatefulWidget {
 }
 
 class _SecondState extends State<Second> {
+
+  GlobalState _store = GlobalState.instance;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -18,8 +21,8 @@ class _SecondState extends State<Second> {
           child: new Center(
             child: new Column(
               children: <Widget>[
-                new Text('Second Page'),
-                new RaisedButton(onPressed: (){Navigator.of(context).pushNamedAndRemoveUntil('/Third', (Route<dynamic> route) => false);}, child: new Text('Next'),),
+                new Text('Hello ${_store.get('name')}'),
+
                 new RaisedButton(onPressed: (){Navigator.of(context).pop();}, child: new Text('Back'),)
               ],
             ),
