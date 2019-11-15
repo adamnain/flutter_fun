@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         //All available pages
         '/Home': (BuildContext context) => new Home(),
-        '/Second': (BuildContext context) => new Second(),
+        '/Second': (BuildContext context) => new Second(""),
       },
       home: new Home(), //first page displayed
     );

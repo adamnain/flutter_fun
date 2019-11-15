@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import '../code/GlobalState.dart';
+
 
 class Second extends StatefulWidget {
+  Second(this.name);
+  String name;
   @override
-  _SecondState createState() => new _SecondState();
+  _SecondState createState() => new _SecondState(name);
 }
 
 class _SecondState extends State<Second> {
-
-  GlobalState _store = GlobalState.instance;
+  _SecondState(this.name);
+  String name;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class _SecondState extends State<Second> {
           child: new Center(
             child: new Column(
               children: <Widget>[
-                new Text('Hello ${_store.get('name')}'),
+                new Text('Hello ${name}'),
 
                 new RaisedButton(onPressed: (){Navigator.of(context).pop();}, child: new Text('Back'),)
               ],
