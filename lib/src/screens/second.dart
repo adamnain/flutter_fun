@@ -19,8 +19,8 @@ class _SecondState extends State<Second> {
             child: new Column(
               children: <Widget>[
                 new Text('Second Page'),
-                new RaisedButton(onPressed: (){Navigator.of(context).pushNamed('/Third');}, child: new Text('Next'),),
-                new RaisedButton(onPressed: (){Navigator.of(context).pushNamed('/Home');}, child: new Text('Back'),)
+                new RaisedButton(onPressed: (){Navigator.of(context).pushNamedAndRemoveUntil('/Third', (Route<dynamic> route) => false);}, child: new Text('Next'),),
+                new RaisedButton(onPressed: (){Navigator.of(context).pop();}, child: new Text('Back'),)
               ],
             ),
           )

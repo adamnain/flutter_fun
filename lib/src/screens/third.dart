@@ -19,7 +19,14 @@ class _ThirdState extends State<Third> {
             child: new Column(
               children: <Widget>[
                 new Text('Third Page'),
-                new RaisedButton(onPressed: (){Navigator.of(context).pushNamed('/Second');}, child: new Text('Back'),)
+                new RaisedButton(onPressed: (){
+                  if(Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).pushNamed('/Second');
+                  }
+
+                }, child: new Text('Back'),)
               ],
             ),
           )
